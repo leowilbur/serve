@@ -1,0 +1,25 @@
+# Static File Server
+
+A simple static file server built with Go, using the Gin web framework and the urfave/cli package. This server allows you to serve a folder over HTTP, making it easy to host static websites or serve static assets during development.
+
+## Features
+
+- **Serve Static Files**: Serve any folder's contents over HTTP.
+- **Customizable Port**: Specify the port to serve on.
+- **Customizable Directory**: Choose which directory to serve. Defaults to the current directory.
+
+## Installation
+
+1. Make sure you have [Go installed](https://golang.org/dl/).
+2. Clone the repository or copy the `main.go` file into your project.
+3. Install the required dependencies:
+    ```bash
+    go mod tidy
+    ```
+
+## Usage
+
+You can run the server using the following command:
+
+```bash
+go run main.go [OPTIONS]

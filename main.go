@@ -1,18 +1,52 @@
 package main
 
 import (
-	"flag"
+	"fmt"
 	"log"
-	"net/http"
+	"os"
+
+	"github.com/gin-gonic/gin"
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
-	port := flag.String("p", "3000", "port to serve on")
-	directory := flag.String("d", ".", "the directory of static file to host")
-	flag.Parse()
+	app := &cli.App{
+		Name:  "Static File Server",
+		Usage: "Serve a folder over HTTP",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "directory",
+				Aliases: []string{"d"},
+				Usage:   "Path to the folder to serve. Defaults to the current folder",
+				Value:   ".", // Default to current directory
+			},
+			&cli.StringFlag{
+				Name:    "port",
+				Aliases: []string{"p"},
+				Usage:   "Port to serve on. Defaults to 3000",
+				Value:   "3000", // Default to port 3000
+			},
+		},
+		Action: func(c *cli.Context) error {
+			directory := c.String("directory")
+			port := c.String("port")
 
-	http.Handle("/", http.FileServer(http.Dir(*directory)))
+			gin.SetMode(gin.ReleaseMode)
+			r := gin.Default()
 
-	log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
-	log.Fatal(http.ListenAndServe(":"+*port, nil))
+			r.Static("/", "./"+directory)
+
+			r.NoRoute(func(c *gin.Context) {
+				c.File("./" + directory + "/index.html")
+			})
+
+			// Start the server on the specified port
+			fmt.Printf("Serving %s on http://localhost:%s", directory, port)
+			return r.Run(":" + port)
+		},
+	}
+
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
 }
