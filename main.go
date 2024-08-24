@@ -18,7 +18,7 @@ func main() {
 				Name:    "directory",
 				Aliases: []string{"d"},
 				Usage:   "Path to the folder to serve. Defaults to the current folder",
-				Value:   ".", // Default to current directory
+				Value:   "build", // Default to current directory
 			},
 			&cli.StringFlag{
 				Name:    "port",
